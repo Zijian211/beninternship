@@ -7,8 +7,8 @@ export async function GET() {
   return NextResponse.json({
     success: true,
     data: {
-      kpi: MOCK_STATION_STATUS,      // The 4 cards
-      trend: MOCK_ANALYSIS_DATA      // The new chart data
+      kpi: MOCK_STATION_STATUS,
+      trend: MOCK_ANALYSIS_DATA
     },
     timestamp: new Date().toISOString(),
   });
