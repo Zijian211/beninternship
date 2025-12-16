@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import MonitoringMenu, { MONITORING_ITEMS } from "./components/menu/MonitoringMenu";
 import ManagementMenu, { MANAGEMENT_ITEMS } from "./components/menu/ManagementMenu";
 import StationPowerChart from "./components/charts/StationPowerChart";
+import StationPowerCard from "./components/cards/StationPowerCard"; 
 import InverterCard from "./components/cards/InverterCard"; 
 
 const ALL_ITEMS = [...MONITORING_ITEMS, ...MANAGEMENT_ITEMS];
@@ -17,7 +18,6 @@ export default function Dashboard() {
 
   // --- FETCH DATA ---
   useEffect(() => {
-    // CRITICAL FIX: Reset data immediately to prevent "map is not a function" error
     setStationData(null); 
     setLoading(true);
 
@@ -43,7 +43,7 @@ export default function Dashboard() {
         .finally(() => setLoading(false));
     }
 
-    // OTHER TABS (Stop loading immediately)
+    // OTHER TABS
     else {
       setLoading(false);
     }
@@ -63,40 +63,14 @@ export default function Dashboard() {
 
     // STATION STATUS TAB
     if (activeTab === 'station' && stationData) {
-      // Safety check: Ensure we have the right data shape for Station
       if (!stationData.kpi || !stationData.trend) return null;
 
       const { kpi, trend } = stationData;
       return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
           
-          {/* KPI CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 bg-blue-50 border border-blue-100 rounded-xl shadow-sm">
-               <div className="text-sm text-blue-600 font-bold uppercase mb-1">Real-Time Power</div>
-               <div className="text-3xl font-black text-blue-900">
-                 {kpi.power.value} <span className="text-lg font-medium">{kpi.power.unit}</span>
-               </div>
-            </div>
-            <div className="p-6 bg-green-50 border border-green-100 rounded-xl shadow-sm">
-               <div className="text-sm text-green-600 font-bold uppercase mb-1">Daily Yield</div>
-               <div className="text-3xl font-black text-green-900">
-                 {kpi.dailyEnergy.value} <span className="text-lg font-medium">{kpi.dailyEnergy.unit}</span>
-               </div>
-            </div>
-            <div className="p-6 bg-purple-50 border border-purple-100 rounded-xl shadow-sm">
-               <div className="text-sm text-purple-600 font-bold uppercase mb-1">Safe Operation</div>
-               <div className="text-3xl font-black text-purple-900">
-                 {kpi.safetyDays} <span className="text-lg font-medium">Days</span>
-               </div>
-            </div>
-             <div className="p-6 bg-orange-50 border border-orange-100 rounded-xl shadow-sm">
-               <div className="text-sm text-orange-600 font-bold uppercase mb-1">Condition</div>
-               <div className="text-3xl font-black text-orange-900">
-                 {kpi.weather.temp}°C <span className="text-lg font-medium">{kpi.weather.condition}</span>
-               </div>
-            </div>
-          </div>
+          {/* Cards COMPONENT */}
+          <StationPowerCard data={kpi} />
 
           {/* CHART COMPONENT */}
           <StationPowerChart data={trend} />
@@ -104,8 +78,7 @@ export default function Dashboard() {
       );
     }
 
-    // SCENARIO 3: INVERTER TAB
-    // Safety check: Ensure stationData is actually an Array before mapping
+    // INVERTER TAB
     if (activeTab === 'inverter' && stationData && Array.isArray(stationData)) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in duration-500">
@@ -116,7 +89,7 @@ export default function Dashboard() {
       );
     }
 
-    // SCENARIO 4: OTHER TABS / EMPTY STATE
+    // OTHER TABS / EMPTY STATE
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-300">
         <currentItem.icon size={64} className="mb-4 opacity-20" />
