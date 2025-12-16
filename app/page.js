@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import MonitoringMenu, {
   MONITORING_ITEMS,
-} from "@/components/menu/MonitoringMenu";
+} from "../components/menu/MonitoringMenu";
 import ManagementMenu, {
   MANAGEMENT_ITEMS,
-} from "@/components/menu/ManagementMenu";
+} from "../components/menu/ManagementMenu";
 
 const ALL_ITEMS = [...MONITORING_ITEMS, ...MANAGEMENT_ITEMS];
 
