@@ -1,5 +1,5 @@
-# 1. Use Node.js 18 (Alpine is a lightweight version of Linux)
-FROM node:18-alpine
+# 1. Use Node.js 20 (Required for Next.js 15+)
+FROM node:20-alpine
 
 # 2. Set the working directory inside the server
 WORKDIR /app
