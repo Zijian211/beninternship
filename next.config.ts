@@ -1,12 +1,15 @@
-import type { NextConfig } from "next";
-
-// We use 'any' here to silence the strict type checker
-const nextConfig: any = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
     ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    ignoreBuildErrors: true,
   },
 };
 
