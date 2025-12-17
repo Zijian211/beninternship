@@ -12,6 +12,7 @@ import CameraGridView from "./components/views/CameraGridView";
 import SensorCard from "./components/cards/SensorCard";
 import FieldMap from "./components/charts/FieldMap";
 import RobotView from "./components/views/RobotView";
+import EdgeNodeBar from "./components/charts/EdgeNodeBar";
 
 const ALL_ITEMS = [...MONITORING_ITEMS, ...MANAGEMENT_ITEMS];
 
@@ -102,6 +103,17 @@ export default function Dashboard() {
         .catch((err) => console.error("Robot API Error:", err))
         .finally(() => setLoading(false));
     }
+
+    // EDGE NODE TAB LOGIC
+    else if (activeTab === 'edge') {
+       fetch('/api/monitoring/edge')
+       .then((res) => res.json())
+        .then((json) => {
+          if (json.data) setStationData(json.data);
+        })
+        .catch((err) => console.error("EdgeNode API Error:", err))
+        .finally(() => setLoading(false));
+    }
     
     // OTHER TABS
     else {
@@ -173,7 +185,12 @@ export default function Dashboard() {
     if (activeTab === 'robots' && stationData && Array.isArray(stationData)) {
       return <RobotView data={stationData} />;
     }
-
+    
+    // EDGE NODE VIEW TAB
+    if (activeTab === 'edge' && stationData && Array.isArray(stationData)) {
+      return <EdgeNodeBar data={stationData} />;
+    }
+    
     // OTHER TABS / EMPTY STATE
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-300">
