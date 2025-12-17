@@ -63,3 +63,11 @@ export const MOCK_MODULES = [
     panels: Array(20).fill({ v: 33.6, c: 9.2, status: "normal" }) 
   },
 ];
+
+// CCTV CAMERAS
+export const MOCK_CAMERAS = [
+  { id: "CAM-01", name: "Main Gate", status: "online", url: "https://images.unsplash.com/photo-1562619425-c307bb83bc42?w=800&q=80" },
+  { id: "CAM-02", name: "Inverter Room A", status: "online", url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80" },
+  { id: "CAM-03", name: "PV Field North", status: "online", url: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80" },
+  { id: "CAM-04", name: "Substation", status: "offline", url: "" }, // Simulated offline camera
+];
