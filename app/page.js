@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 
 import MonitoringMenu, { MONITORING_ITEMS } from "./components/menu/MonitoringMenu";
 import ManagementMenu, { MANAGEMENT_ITEMS } from "./components/menu/ManagementMenu";
+
 import StationPowerChart from "./components/charts/StationPowerChart";
 import StationPowerCard from "./components/cards/StationPowerCard"; 
 import InverterCard from "./components/cards/InverterCard";
 import ModuleMatrixView from "./components/views/ModuleMatrixView";
 import CameraGridView from "./components/views/CameraGridView";
 import SensorCard from "./components/cards/SensorCard";
+import FieldMap from "./components/charts/FieldMap";
 
 const ALL_ITEMS = [...MONITORING_ITEMS, ...MANAGEMENT_ITEMS];
 
@@ -77,6 +79,17 @@ export default function Dashboard() {
         .catch((err) => console.error("Sensor API Error:", err))
         .finally(() => setLoading(false));
     }
+
+    // FIELD TAB LOGIC
+    else if (activeTab === 'field') { 
+       fetch('/api/monitoring/field')
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.data) setStationData(json.data);
+        })
+        .catch((err) => console.error("Field API Error:", err))
+        .finally(() => setLoading(false));
+    }
     
     // OTHER TABS
     else {
@@ -137,6 +150,11 @@ export default function Dashboard() {
     // SENSOR TAB
     if (activeTab === 'sensors' && stationData && Array.isArray(stationData)) {
       return <SensorCard data={stationData} />;
+    }
+
+    // FIELD VIEW TAB
+    if (activeTab === 'field' && stationData && Array.isArray(stationData)) {
+      return <FieldMap data={stationData} />;
     }
 
     // OTHER TABS / EMPTY STATE

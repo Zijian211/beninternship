@@ -81,3 +81,11 @@ export const MOCK_SENSORS = [
   { id: "S-05", name: "Humidity", value: 45, unit: "%", type: "water", status: "normal", trend: "0%" },
   { id: "S-06", name: "Rainfall", value: 0, unit: "mm", type: "water", status: "normal", trend: "0%" },
 ];
+
+// FIELD VIEW (Zone/Area Status)
+export const MOCK_FIELD = [
+  { id: "ZONE-A", name: "North Field", power: 420, capacity: 500, status: "normal", x: 20, y: 30 },
+  { id: "ZONE-B", name: "East Expansion", power: 350, capacity: 600, status: "warning", x: 70, y: 25 },
+  { id: "ZONE-C", name: "South Array", power: 100, capacity: 500, status: "offline", x: 30, y: 70 },
+  { id: "ZONE-D", name: "Central Roof", power: 280, capacity: 300, status: "normal", x: 65, y: 65 },
+];
