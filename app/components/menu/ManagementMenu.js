@@ -1,5 +1,5 @@
 "use client";
-import { Search, BarChart3, Activity, Camera } from "lucide-react";
+import { ClipboardCheck, BarChart3, Stethoscope, TrendingUp } from "lucide-react";
 
 /**
  * GROUP 2: Management
@@ -7,10 +7,10 @@ import { Search, BarChart3, Activity, Camera } from "lucide-react";
  * Logical / analytical system views
  */
 export const MANAGEMENT_ITEMS = [
-  { id: "inspection", cn: "巡检作业", en: "INSPECTION", icon: Search },
+  { id: "inspection", cn: "巡检作业", en: "INSPECTION", icon: ClipboardCheck },
   { id: "analysis", cn: "数据分析", en: "DATA ANALYSIS", icon: BarChart3 },
-  { id: "smart_om", cn: "智能运维", en: "SMART O&M", icon: Activity },
-  { id: "market", cn: "市场监控", en: "MARKET MONITOR", icon: Camera },
+  { id: "smart_om", cn: "智能运维", en: "SMART O&M", icon: Stethoscope },
+  { id: "market", cn: "市场监控", en: "MARKET MONITOR", icon: TrendingUp },
 ];
 
 export default function ManagementMenu({ activeTab, setActiveTab }) {

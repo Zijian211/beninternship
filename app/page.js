@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+// MENU IMPORTS
 import MonitoringMenu, { MONITORING_ITEMS } from "./components/menu/MonitoringMenu";
 import ManagementMenu, { MANAGEMENT_ITEMS } from "./components/menu/ManagementMenu";
+import GitHubLink from "./components/menu/GitHubLink";
 
+// Visualization Imports
 import StationPowerChart from "./components/charts/StationPowerChart";
 import StationPowerCard from "./components/cards/StationPowerCard"; 
 import InverterCard from "./components/cards/InverterCard";
@@ -203,7 +206,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-white text-slate-800 overflow-hidden">
+    <div className="flex h-screen w-full bg-white text-slate-800 overflow-hidden relative">
+      <GitHubLink />
+
       <aside className="w-64 bg-white flex flex-col border-r border-gray-200 shadow-xl shrink-0 z-20">
         <div className="h-16 flex items-center justify-center border-b border-gray-200 shrink-0">
           <h1 className="font-bold text-xl text-blue-900">EMS SYSTEM</h1>
@@ -213,7 +218,7 @@ export default function Dashboard() {
           <ManagementMenu activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
       </aside>
-
+      
       <main className="flex-1 flex flex-col overflow-hidden bg-white relative">
         <header className="h-12 bg-gray-50 border-b border-gray-200 flex items-center px-6 shrink-0">
           <h2 className="text-lg font-bold text-gray-800">

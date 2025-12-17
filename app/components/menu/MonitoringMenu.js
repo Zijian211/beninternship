@@ -1,12 +1,13 @@
 "use client";
-import {
-  LayoutDashboard,
-  Server,
-  Zap,
-  Activity,
-  Radio,
-  ShieldCheck,
-  Camera,
+import { 
+  Camera, 
+  LayoutDashboard, 
+  Map,
+  Zap, 
+  Grid3x3,
+  Wind,
+  Bot,
+  Server 
 } from "lucide-react";
 
 /**
@@ -17,11 +18,11 @@ import {
 export const MONITORING_ITEMS = [
   { id: "camera", cn: "实时监控", en: "CCTV", icon: Camera },
   { id: "station", cn: "电站层", en: "STATION STATUS", icon: LayoutDashboard },
-  { id: "field", cn: "场区层", en: "FIELD VIEW", icon: Server },
+  { id: "field", cn: "场区层", en: "FIELD VIEW", icon: Map },
   { id: "inverter", cn: "逆变器层", en: "INVERTER", icon: Zap },
-  { id: "module", cn: "组件层", en: "MODULE MATRIX", icon: Activity },
-  { id: "sensors", cn: "传感器", en: "SENSORS", icon: Radio },
-  { id: "robots", cn: "机器人", en: "ROBOTS", icon: ShieldCheck },
+  { id: "module", cn: "组件层", en: "MODULE MATRIX", icon: Grid3x3 },
+  { id: "sensors", cn: "传感器", en: "SENSORS", icon: Wind },
+  { id: "robots", cn: "机器人", en: "ROBOTS", icon: Bot },
   { id: "edge", cn: "边缘计算点", en: "EDGE NODES", icon: Server },
 ];
 
