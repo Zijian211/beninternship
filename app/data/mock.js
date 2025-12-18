@@ -123,10 +123,10 @@ export const MOCK_SENSORS = [
 
 // FIELD VIEW (Zone/Area Status)
 export const MOCK_FIELD = [
-  { id: "ZONE-A", name: "North Field", power: 420, capacity: 500, status: "normal", x: 20, y: 30 },
-  { id: "ZONE-B", name: "East Expansion", power: 350, capacity: 600, status: "warning", x: 70, y: 25 },
-  { id: "ZONE-C", name: "South Array", power: 100, capacity: 500, status: "offline", x: 30, y: 70 },
-  { id: "ZONE-D", name: "Central Roof", power: 280, capacity: 300, status: "normal", x: 65, y: 65 },
+  { id: "Z-01", name: "North Field", power: 420, capacity: 500, status: "normal", x: 20, y: 30 },
+  { id: "Z-02", name: "East Array", power: 350, capacity: 600, status: "warning", x: 70, y: 25 },
+  { id: "Z-03", name: "South Block", power: 100, capacity: 500, status: "offline", x: 30, y: 70 },
+  { id: "Z-04", name: "West Ext", power: 280, capacity: 300, status: "normal", x: 65, y: 65 },
 ];
 
 // ROBOT FLEET

@@ -22,7 +22,7 @@ export default function StationMap({ data }) {
         {data.zones.map((zone) => (
           <div key={zone.id} className="relative bg-slate-50 p-3 rounded-lg border border-slate-100">
             <div className="absolute top-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur text-[10px] font-bold text-slate-500 rounded shadow-sm border border-slate-200">
-              {zone.name}
+              {zone.id} -- {zone.name}
             </div>
             
             {/* The Matrix Visualization */}

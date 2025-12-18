@@ -10,7 +10,7 @@ import {
 const MENU_STRUCTURE = [
   {
     id: "cctv_parent",
-    label: "实时监控",
+    label: "实时监测",
     subLabel: "REAL-TIME MONITORING",
     icon: Video,
     type: "parent",
