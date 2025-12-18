@@ -1,3 +1,4 @@
+// 1. STATION LAYER DATA
 // STATION STATUS (KPIs for the main dashboard)
 export const MOCK_STATION_STATUS = {
   power: { value: 450.5, unit: "kW", trend: "up" },
@@ -19,6 +20,42 @@ export const MOCK_ANALYSIS_DATA = [
   { time: '20:00', power: 0 },
 ];
 
+// IRREGULAR STATION MAP (4 "Zones" with thousands of modules in irregular shapes)
+const generateZoneMatrix = (rows, cols, seed) => {
+  const matrix = [];
+  for (let r = 0; r < rows; r++) {
+    const row = [];
+    for (let c = 0; c < cols; c++) {
+      // Logic to create "Irregular" shapes (cut out corners/holes)
+      const isVoid = (r < 2 && c < 5) || (r > rows - 4 && c > cols - 6) || Math.random() > 0.98;
+      
+      if (isVoid) {
+        row.push(0); // 0 = Empty Grass
+      } else {
+        // Random Status: 98% Normal (1), 1.5% Warning (2), 0.5% Fault (3)
+        const rand = Math.random();
+        let status = 1; 
+        if (rand > 0.995) status = 3; // Fault (Red)
+        else if (rand > 0.98) status = 2; // Warning (Orange)
+        
+        row.push(status);
+      }
+    }
+    matrix.push(row);
+  }
+  return matrix;
+};
+
+export const MOCK_STATION_MAP = {
+  zones: [
+    { id: "Z-01", name: "North Field", matrix: generateZoneMatrix(12, 24) }, // ~280 modules
+    { id: "Z-02", name: "East Array", matrix: generateZoneMatrix(10, 20) },  // ~200 modules
+    { id: "Z-03", name: "South Block", matrix: generateZoneMatrix(14, 28) }, // ~390 modules
+    { id: "Z-04", name: "West Ext", matrix: generateZoneMatrix(8, 30) }     // ~240 modules
+  ]
+};
+
+// 2. INVERTER LAYER DATA
 // INVERTER LIST (Status of hardware)
 export const MOCK_INVERTERS = [
   { id: "INV-001", status: "Normal", efficiency: 98.5, temp: 42 },
@@ -27,6 +64,7 @@ export const MOCK_INVERTERS = [
   { id: "INV-004", status: "Offline", efficiency: 0, temp: 20 },
 ];
 
+// 3. MODULE LAYER DATA
 // MODULE MATRIX (Strings of solar panels)
 export const MOCK_MODULES = [
   { 
@@ -64,6 +102,7 @@ export const MOCK_MODULES = [
   },
 ];
 
+// 4. ADDITIONAL SYSTEM DATA
 // CCTV CAMERAS
 export const MOCK_CAMERAS = [
   { id: "CAM-01", name: "Main Gate", status: "online", url: "https://images.unsplash.com/photo-1562619425-c307bb83bc42?w=800&q=80" },
