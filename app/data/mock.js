@@ -1,4 +1,4 @@
-// --- 1. CONFIGURATION (RENAMED FOR GEOGRAPHIC ACCURACY) ---
+// --- 1. CONFIGURATION (GEOGRAPHICALLY ACCURATE) ---
 const ZONES = {
   Z01: { id: "Z-01", name: "North-West Field", capacity: 500, rows: 12, cols: 24, invCount: 2 }, 
   Z02: { id: "Z-02", name: "North-East Field", capacity: 500, rows: 12, cols: 24, invCount: 2 },
@@ -7,16 +7,20 @@ const ZONES = {
 };
 
 // --- 2. PHYSICS ENGINE ---
+// --- Calculates power based on environment (Temp, Sun) and Status ---
 const calculatePowerOutput = (capacityKw, irradiance, temp, isOffline = false) => {
   if (isOffline) return 0; 
-  const sunFactor = irradiance / 1000; 
+  
+  const sunFactor = irradiance / 1000; // 1000W/m² is baseline
+  // --- Physics: 0.4% efficiency loss for every degree above 25°C ---
   const heatLoss = temp > 25 ? (temp - 25) * 0.004 : 0; 
-  const systemEff = 0.96;
+  const systemEff = 0.96; // --- Cable & Inverter losses ---
+  
   let output = capacityKw * sunFactor * (1 - heatLoss) * systemEff;
   return Math.max(0, parseFloat(output.toFixed(1)));
 };
 
-// --- 3. FIELD CONDITIONS ---
+// --- 3. FIELD CONDITIONS (THE "SCENARIO") ---
 const CONDITIONS = [
   { zone: ZONES.Z01, irradiance: 950, temp: 32, wind: 5.5 },
   { zone: ZONES.Z02, irradiance: 960, temp: 68, wind: 1.2 },
@@ -24,53 +28,64 @@ const CONDITIONS = [
   { zone: ZONES.Z04, irradiance: 880, temp: 29, wind: 4.5 },
 ];
 
-// --- 4. MAP & ID GENERATOR ---
+// --- 4. MAP & ID GENERATOR (CORE LOGIC) ---
 const generateZoneData = (zoneConfig, temp) => {
-  const { rows, cols, id } = zoneConfig;
+  const { rows, cols, id, invCount, name } = zoneConfig;
   const matrix = [];
   const flatModules = []; 
   
   let moduleCounter = 0;
   const panelsPerString = 20;
 
-  // Base Status Logic
+  // --- Determine Base Status for the Zone ---
   let baseStatus = "normal";
-  if (temp > 60) baseStatus = "warning"; // Overheating Zone
-  if (id === "Z-04") baseStatus = "fault"; // Broken Zone
+  if (temp > 60) baseStatus = "warning";
+  if (id === "Z-04") baseStatus = "fault";
 
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < cols; c++) {
       
-      // VOID LOGIC
+      // --- A. VOID LOGIC (Visual Realism) ---
+      // --- 1. Cut corners ---
       const isCornerCut = (r < 2 && c < 3) || (r > rows - 3 && c > cols - 4);
+      // --- 2. Central Road ---
       const isCentralRoad = (c === Math.floor(cols / 2)); 
-      const isRandomVoid = Math.random() > 0.97; // 3% random gaps
+      // --- 3. Random Terrain Gaps (3% chance) ---
+      const isRandomVoid = Math.random() > 0.97;
 
       if (isCornerCut || isCentralRoad || isRandomVoid) {
-        row.push(null); 
+        row.push(null); // Render as Empty Space
       } else {
-        // MODULE LOGIC
+        // --- B. MODULE LOGIC ---
         moduleCounter++;
         
-        // Assign IDs
+        // --- 1. Calculate Hierarchy IDs ---
         const currentStringNum = Math.ceil(moduleCounter / panelsPerString);
         const panelNumInString = ((moduleCounter - 1) % panelsPerString) + 1;
         
+        // --- 2. Assign Inverter (Round Robin Distribution)
+        const invIndex = (currentStringNum - 1) % invCount;
+        const assignedInvId = `INV-${id.split('-')[1]}-0${invIndex + 1}`;
+
+        // --- 3. Generate Display IDs ---
         const stringId = `STR-${id.split('-')[1]}-${currentStringNum.toString().padStart(2, '0')}`;
         const panelId = `P-${panelNumInString.toString().padStart(2, '0')}`;
         const uniqueKey = `${stringId}-${panelId}`;
 
-        // Random Fault Injection (1% chance)
+        // --- 4. Fault Injection (1% Random failure in healthy zones) ---
         const isRandomBroken = Math.random() > 0.99; 
         let status = baseStatus;
         if (baseStatus !== "fault" && isRandomBroken) status = "fault";
 
+        // --- 5. Build Object (Contains Navigation Data) ---
         const cellData = {
           type: "module",
           status: status,
           stringId: stringId,
           panelId: panelId,
+          inverterId: assignedInvId, // <--- Link for Navigation
+          zoneName: name,            // <--- Link for Navigation
           key: uniqueKey,
           v: baseStatus === "fault" ? 0 : (32 + Math.random()).toFixed(1), 
           c: baseStatus === "fault" ? 0 : 9.1
@@ -91,37 +106,53 @@ const PROCESSED_ZONES = CONDITIONS.map(c => {
   return { ...c, ...data };
 });
 
-// --- 6. EXPORTS ---
+// --- 6. EXPORTS (API RESPONSES) ---
 
-// A. SENSORS
+// --- A. SENSORS ---
 export const MOCK_SENSORS = CONDITIONS.flatMap(c => [
-  { id: `S-IRR-${c.zone.id.split('-')[1]}`, zoneId: c.zone.id, name: `Irradiance (${c.zone.name})`, type: "Irradiance", value: c.irradiance, unit: "W/m²", status: "normal" },
-  { id: `S-TMP-${c.zone.id.split('-')[1]}`, zoneId: c.zone.id, name: `Module Temp (${c.zone.name})`, type: "Temp", value: c.temp, unit: "°C", status: c.temp > 60 ? "warning" : "normal" },
+  { 
+    id: `S-IRR-${c.zone.id.split('-')[1]}`, 
+    zoneId: c.zone.id, 
+    name: `Irradiance (${c.zone.name})`, 
+    type: "Irradiance", 
+    value: c.irradiance, 
+    unit: "W/m²", 
+    status: "normal" 
+  },
+  { 
+    id: `S-TMP-${c.zone.id.split('-')[1]}`, 
+    zoneId: c.zone.id, 
+    name: `Module Temp (${c.zone.name})`, 
+    type: "Temp", 
+    value: c.temp, 
+    unit: "°C", 
+    status: c.temp > 60 ? "warning" : "normal" 
+  },
 ]);
 
-// B. INVERTERS (FIX: ADDED VARIANCE "JITTER")
+// --- B. INVERTERS (With "Jitter" for Realism) ---
 export const MOCK_INVERTERS = PROCESSED_ZONES.flatMap(z => {
   const count = z.zone.invCount;
   const isZoneDead = z.zone.id === "Z-04"; 
-  const invCapacity = z.zone.capacity / count;
-  const zonePower = calculatePowerOutput(z.zone.capacity, z.irradiance, z.temp, isZoneDead);
   
-  // Base power per inverter
+  // --- Calculate raw power for the zone ---
+  const zonePower = calculatePowerOutput(z.zone.capacity, z.irradiance, z.temp, isZoneDead);
   const baseInvPower = zonePower / count;
+  const baseCapacity = z.zone.capacity / count;
 
   return Array(count).fill(null).map((_, i) => {
-    // 1. ADD RANDOM VARIANCE (± 1-2%)
-    const jitter = isZoneDead ? 0 : (Math.random() * 4 - 2);
+    // --- Add ±1.5kW random variance for realism ---
+    const jitter = isZoneDead ? 0 : (Math.random() * 3 - 1.5); 
     const finalPower = Math.max(0, parseFloat((baseInvPower + jitter).toFixed(1)));
     
-    // 2. Temperature Variance
+    // --- Add ±1°C temp variance as well ---
     const tempJitter = isZoneDead ? 0 : (Math.random() * 2 - 1);
-    
+
     return {
       id: `INV-${z.zone.id.split('-')[1]}-0${i+1}`, 
       zoneId: z.zone.id,
       zoneName: z.zone.name,
-      capacity: parseFloat(invCapacity.toFixed(0)),
+      capacity: parseFloat(baseCapacity.toFixed(0)),
       currentPower: finalPower,
       efficiency: isZoneDead ? 0 : (z.temp > 60 ? 94.5 : 98.2), 
       temp: parseFloat((isZoneDead ? 20 : z.temp + 5 + tempJitter).toFixed(1)),
@@ -130,20 +161,16 @@ export const MOCK_INVERTERS = PROCESSED_ZONES.flatMap(z => {
   });
 });
 
-// C. MODULE STRINGS
+// --- C. MODULE STRINGS (Aggregated from Flat List) ---
 export const MOCK_MODULES = PROCESSED_ZONES.flatMap(z => {
   const stringsMap = {};
   
   z.flatModules.forEach(m => {
+    // --- Group by String ID ---
     if (!stringsMap[m.stringId]) {
-      // Distribute strings among available inverters
-      const stringNum = parseInt(m.stringId.split('-')[2]);
-      const invIndex = (stringNum - 1) % z.zone.invCount;
-      const assignedInvId = `INV-${z.zone.id.split('-')[1]}-0${invIndex + 1}`;
-
       stringsMap[m.stringId] = {
         id: m.stringId,
-        inverterId: assignedInvId,
+        inverterId: m.inverterId,
         zoneId: z.zone.id,
         zoneName: z.zone.name,
         status: "normal", 
@@ -153,21 +180,26 @@ export const MOCK_MODULES = PROCESSED_ZONES.flatMap(z => {
     stringsMap[m.stringId].panels.push(m);
   });
 
+  // --- Calculate String Status based on Panels ---
   return Object.values(stringsMap).map(str => {
     if (str.zoneId === "Z-04") {
       str.status = "fault";
       return str;
     }
+    
+    // --- Normal Logic ---
     const hasFault = str.panels.some(p => p.status === 'fault');
     const hasWarning = str.panels.some(p => p.status === 'warning');
+    
     if (hasFault) str.status = "fault";
     else if (hasWarning) str.status = "warning";
     else str.status = "normal";
+    
     return str;
   });
 });
 
-// D. STATION MAP
+// --- D. STATION MAP (Visual Layer) ---
 export const MOCK_STATION_MAP = {
   zones: PROCESSED_ZONES.map(z => ({
     id: z.zone.id, 
@@ -176,7 +208,7 @@ export const MOCK_STATION_MAP = {
   }))
 };
 
-// E. FIELD SUMMARY (COORDINATE MATCHING)
+// --- E. FIELD SUMMARY (Coordinates Match Names) ---
 export const MOCK_FIELD = PROCESSED_ZONES.map(z => {
   const isZoneDead = z.zone.id === "Z-04";
   return {
@@ -186,12 +218,13 @@ export const MOCK_FIELD = PROCESSED_ZONES.map(z => {
     capacity: z.zone.capacity,
     moduleCount: z.moduleCount,
     status: isZoneDead ? "offline" : (z.temp > 60 ? "warning" : "normal"),
+    // Coordinates (Top-Left 0,0)
     x: z.zone.id === 'Z-01' ? 20 : z.zone.id === 'Z-02' ? 70 : z.zone.id === 'Z-03' ? 30 : 65,
     y: z.zone.id === 'Z-01' ? 30 : z.zone.id === 'Z-02' ? 25 : z.zone.id === 'Z-03' ? 70 : 65,
   };
 });
 
-// --- 7. STATION OVERVIEW & OTHER MOCK DATA (Static) ---
+// --- F. STATION OVERVIEW & OTHER MOCK DATA (Static) ---
 export const MOCK_STATION_STATUS = {
   power: { value: 450.5, unit: "kW", trend: "up" },
   dailyEnergy: { value: 1250, unit: "kWh" },

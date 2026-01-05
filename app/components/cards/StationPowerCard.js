@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function StationPowerCard({ data }) {
-  // Safety check
+  // --- Safety check ---
   if (!data) return null;
 
   return (

@@ -4,7 +4,7 @@ import { Zap, AlertTriangle, CheckCircle, XCircle, Grid3x3 } from "lucide-react"
 export default function FieldMap({ data }) {
   if (!data) return null;
 
-  // Status Colors & Icons
+  // --- Status Colors & Icons ---
   const getStatusConfig = (status) => {
     switch (status) {
       case "normal": return { color: "bg-green-500", glow: "shadow-green-500/50", icon: CheckCircle };

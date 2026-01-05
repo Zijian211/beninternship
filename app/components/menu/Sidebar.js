@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronRight 
 } from "lucide-react";
 
-// Define the MENU STRUCTURE
+// --- Define the MENU STRUCTURE ---
 const MENU_STRUCTURE = [
   {
     id: "cctv_parent",
@@ -93,7 +93,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   );
 }
 
-// Export a helper to find the current item details for the Header
+// --- Export a helper to find the current item details for the Header ---
 export const getItemDetails = (id) => {
   for (const item of MENU_STRUCTURE) {
     if (item.id === id) return { cn: item.label, en: item.subLabel, icon: item.icon };

@@ -1,11 +1,21 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Filter, Layers } from "lucide-react";
 
-export default function ModuleMatrixView({ data }) {
+export default function ModuleMatrixView({ data, initialFilter }) {
   const safeData = Array.isArray(data) ? data : [];
+  
+  // --- Initialize state ---
   const [selectedZone, setSelectedZone] = useState("ALL");
   const [selectedInverter, setSelectedInverter] = useState("ALL");
+
+  // --- LISTEN FOR DRILL-DOWN FILTER ---
+  useEffect(() => {
+    if (initialFilter) {
+      if (initialFilter.zone) setSelectedZone(initialFilter.zone);
+      if (initialFilter.inverter) setSelectedInverter(initialFilter.inverter);
+    }
+  }, [initialFilter]);
 
   const zones = useMemo(() => {
     if (safeData.length === 0) return ["ALL"];
@@ -58,7 +68,6 @@ export default function ModuleMatrixView({ data }) {
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredStrings.length > 0 ? (
           filteredStrings.map((string) => (

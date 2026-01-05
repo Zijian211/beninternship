@@ -4,7 +4,7 @@ import { Server, Cpu, HardDrive, Network, Wifi } from "lucide-react";
 export default function EdgeNodeBar({ data }) {
   if (!data) return null;
 
-  // Progress Bar Color
+  // --- Progress Bar Color ---
   const getUsageColor = (value) => {
     if (value > 80) return "bg-red-500";
     if (value > 50) return "bg-yellow-500";
@@ -88,7 +88,7 @@ export default function EdgeNodeBar({ data }) {
 
               </div>
             ) : (
-              // Offline State Display
+              // --- Offline State Display ---
               <div className="h-32 flex flex-col items-center justify-center text-gray-300 bg-gray-50 rounded-lg border border-dashed border-gray-200">
                 <span className="text-sm font-medium">Connection Lost</span>
                 <span className="text-xs">Check physical connection</span>

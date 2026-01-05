@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 // --- IMPORTS ---
-import Sidebar, { getItemDetails } from "./components/menu/Sidebar"; // <--- NEW SIDEBAR
+import Sidebar, { getItemDetails } from "./components/menu/Sidebar"; 
 import GitHubLink from "./components/menu/GitHubLink";
 
 // --- VIEWS ---
@@ -21,7 +21,11 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("station"); // Default to Station
   const [stationData, setStationData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const currentItem = getItemDetails(activeTab); // Get current Page Title based on activeTab
+  
+  // --- NAVIGATION CONTEXT (For Drill-Down) ---
+  const [navContext, setNavContext] = useState({ zone: "ALL", inverter: "ALL" });
+
+  const currentItem = getItemDetails(activeTab); 
 
   // --- FETCH DATA ---
   useEffect(() => {
@@ -54,6 +58,17 @@ export default function Dashboard() {
     }
   }, [activeTab]);
 
+  // --- DRILL DOWN HANDLER ---
+  const handleDrillDown = (targetTab, context = {}) => {
+    // --- Set the filters (Context) ---
+    setNavContext({
+      zone: context.zone || "ALL",
+      inverter: context.inverter || "ALL"
+    });
+    // --- Switch the Tab ---
+    setActiveTab(targetTab);
+  };
+
   // --- RENDER CONTENT ---
   const renderContent = () => {
     if (loading) {
@@ -64,8 +79,8 @@ export default function Dashboard() {
       );
     }
 
-    // SUB-FUNCTIONS (Inside Real-Time Monitoring)
-if (activeTab === 'station' && stationData) {
+    // --- SUB-FUNCTIONS (Inside Real-Time Monitoring) ---
+    if (activeTab === 'station' && stationData) {
       if (!stationData.kpi || !stationData.trend) return null;
 
       return (
@@ -73,10 +88,10 @@ if (activeTab === 'station' && stationData) {
           
           {/* MIDDLE COLUMN: Status & Charts (40% width) */}
           <div className="w-full lg:w-5/12 flex flex-col gap-6 h-full overflow-y-auto pr-2">
-            {/* 1. KPI Cards */}
+            {/* KPI Cards */}
             <StationPowerCard data={stationData.kpi} />
             
-            {/* 2. Chart (Flex-grow to fill remaining height) */}
+            {/* Chart*/}
             <div className="flex-1 min-h-75">
                <StationPowerChart data={stationData.trend} />
             </div>
@@ -84,25 +99,34 @@ if (activeTab === 'station' && stationData) {
 
           {/* RIGHT COLUMN: Overall Module Matrix (60% width) */}
           <div className="w-full lg:w-7/12 h-full min-h-125">
-            <StationMap data={stationData.map} />
+            {/* PASS NAVIGATION HANDLER */}
+            <StationMap data={stationData.map} onNavigate={handleDrillDown} />
           </div>
 
         </div>
       );
     }
 
-    if (activeTab === 'field' && stationData && Array.isArray(stationData)) return <FieldMap data={stationData} />;
-    if (activeTab === 'inverter' && stationData && Array.isArray(stationData)) {
-      return <InverterView data={stationData} />;
+    if (activeTab === 'field' && stationData && Array.isArray(stationData)) {
+        return <FieldMap data={stationData} />;
     }
-    if (activeTab === 'module' && stationData && Array.isArray(stationData)) return <ModuleMatrixView data={stationData} />;
+
+    if (activeTab === 'inverter' && stationData && Array.isArray(stationData)) {
+      // --- PASS CONTEXT TO INVERTER VIEW ---
+      return <InverterView data={stationData} initialFilter={navContext} />;
+    }
+
+    if (activeTab === 'module' && stationData && Array.isArray(stationData)) {
+       // --- PASS CONTEXT TO MODULE VIEW ---
+       return <ModuleMatrixView data={stationData} initialFilter={navContext} />;
+    }
+
     if (activeTab === 'sensors' && stationData && Array.isArray(stationData)) return <SensorCard data={stationData} />;
     if (activeTab === 'robots' && stationData && Array.isArray(stationData)) return <RobotView data={stationData} />;
     if (activeTab === 'edge' && stationData && Array.isArray(stationData)) return <EdgeNodeBar data={stationData} />;
     if (activeTab === 'camera' && stationData && Array.isArray(stationData)) return <CameraGridView data={stationData} />;
 
-    // MAIN FUNCTIONS for Management
-    // Placeholders for now until I build the specific views
+    // --- MAIN FUNCTIONS for Management ---
     if (['inspection', 'analysis', 'smart_om', 'market'].includes(activeTab)) {
       return (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
@@ -113,7 +137,7 @@ if (activeTab === 'station' && stationData) {
       );
     }
 
-    // Fallback
+    // --- Fallback ---
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-300">
         <currentItem.icon size={64} className="mb-4 opacity-20" />
@@ -131,7 +155,14 @@ if (activeTab === 'station' && stationData) {
           <h1 className="font-bold text-xl text-blue-900 tracking-wider">EMS SYSTEM</h1>
         </div>
         <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-gray-200">
-          <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          <Sidebar 
+            activeTab={activeTab} 
+            setActiveTab={(tab) => {
+                // --- Reset context when manually clicking sidebar ---
+                setNavContext({ zone: "ALL", inverter: "ALL" });
+                setActiveTab(tab);
+            }} 
+          />
         </div>
       </aside>
 

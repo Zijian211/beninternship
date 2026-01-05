@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 
 export default function StationPowerChart({ data }) {
-  // Guard clause: If no data is passed, show a safe empty state
+  // --- Guard clause: If no data is passed, show a safe empty state ---
   if (!data || data.length === 0) {
     return <div className="h-full w-full flex items-center justify-center text-gray-400">No Chart Data</div>;
   }

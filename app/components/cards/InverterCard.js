@@ -2,7 +2,7 @@ import React from "react";
 import { Zap, Thermometer, Activity, AlertTriangle, MapPin } from "lucide-react";
 
 export default function InverterCard({ data }) {
-  // Determine Color Theme based on Status
+  // --- Determine Color Theme based on Status ---
   const getStatusColor = (status) => {
     switch (status) {
       case "Normal": return "bg-green-50 border-green-200 text-green-700";

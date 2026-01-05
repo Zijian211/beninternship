@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InverterCard from "../cards/InverterCard";
 import { Filter } from "lucide-react";
 
-export default function InverterView({ data }) {
-  // Use a fallback to ensure I don't crash on map()
+export default function InverterView({ data, initialFilter }) {
+  // --- Use a fallback to ensure map() crashes are avoided ---
   const safeData = Array.isArray(data) ? data : [];
   
   const [filterZone, setFilterZone] = useState("ALL");
 
+  // --- LISTEN FOR DRILL-DOWN FILTER ---
+  useEffect(() => {
+    if (initialFilter && initialFilter.zone) {
+        setFilterZone(initialFilter.zone);
+    }
+  }, [initialFilter]);
+
   if (!data) return null;
 
-  // Extract unique zones safely
+  // --- Extract unique zones safely ---
   const zones = ["ALL", ...new Set(safeData.map(item => item.zoneName).filter(Boolean))];
 
-  // Filter Logic
+  // --- Filter Logic ---
   const filteredData = filterZone === "ALL" 
     ? safeData 
     : safeData.filter(item => item.zoneName === filterZone);
@@ -48,13 +55,9 @@ export default function InverterView({ data }) {
       {/* Grid of Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {filteredData.length > 0 ? (
-          filteredData.map((inv) => (
-            <InverterCard key={inv.id} data={inv} />
-          ))
+          filteredData.map(inv => <InverterCard key={inv.id} data={inv} />)
         ) : (
-          <div className="col-span-full text-center py-10 text-slate-400">
-            No inverters found in this zone.
-          </div>
+          <div className="col-span-full p-10 text-center text-slate-400">No Inverters Found</div>
         )}
       </div>
     </div>
