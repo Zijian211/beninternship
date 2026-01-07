@@ -58,7 +58,7 @@ export default function StationMap({ data, onNavigate }) {
                                 onNavigate('module', { zone: cell.zoneName, inverter: cell.inverterId });
                             }
                         }}
-                        title={`${cell.stringId} | ${cell.panelId} (Click to View Matrix)`}
+                        title={`${cell.stringId} | ${cell.panelId} | ${cell.status} -> (Click to View Matrix)`}
                       />
                     );
                   })}
