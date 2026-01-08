@@ -151,7 +151,7 @@ const PROCESSED_ZONES = CONDITIONS.map(c => {
 
 // --- 6. COMPONENT EXPORTS ---
 
-// --- INVERTERS (Fixed Logic) ---
+// --- INVERTERS ---
 export const MOCK_INVERTERS = PROCESSED_ZONES.flatMap(z => {
   const count = z.zone.invCount;
   const zonePower = calculatePowerOutput(z.zone.capacity, z.irradiance, z.temp, z.effLoss);
@@ -193,6 +193,7 @@ export const MOCK_INVERTERS = PROCESSED_ZONES.flatMap(z => {
     };
   });
 });
+
 // --- SENSORS (Unchanged Logic) ---
 export const MOCK_ALL_SENSORS = [
   { id: "ENV-01-RAD", level: "Environmental", name: "Radiometer (Z1)", type: "irradiance", value: 950, unit: "W/m²", status: "normal" },
@@ -208,6 +209,18 @@ export const MOCK_ALL_SENSORS = [
   { id: "SEC-04-FIRE", level: "Security", name: "Smoke/Flame Sensor", type: "fire", value: 1, unit: "Binary", status: "fault" },
   { id: "SEC-04-TILT", level: "Security", name: "Tilt Sensing (Rack)", type: "tilt", value: 0.5, unit: "deg", status: "normal" },
   { id: "MOD-04-IR", level: "Module", name: "IR Thermal Imaging", type: "thermal", value: 65, unit: "°C", status: "warning" },
+];
+
+// --- ROBOTS (With Zone Foreign Keys) ---
+export const MOCK_ROBOTS = [
+  { id: "R-01", name: "Cleaner Alpha", type: "cleaning", battery: 85, status: "working", location: "North-West Field", zoneId: "Z-01" },
+  { id: "R-02", name: "Cleaner Beta", type: "cleaning", battery: 12, status: "charging", location: "North-East Field", zoneId: "Z-02" },
+  { id: "R-03", name: "Cleaner Gamma", type: "cleaning", battery: 45, status: "idle", location: "South-West Field", zoneId: "Z-03" },
+  { id: "D-01", name: "Inspector X", type: "drone", battery: 92, status: "working", location: "North-East Field", zoneId: "Z-02" },
+  { id: "R-04", name: "Cleaner Delta", type: "cleaning", battery: 0, status: "error", location: "South-East Field", zoneId: "Z-04" },
+  { id: "R-05", name: "Cleaner Epsilon", type: "cleaning", battery: 78, status: "working", location: "North-West Field", zoneId: "Z-01" },
+  { id: "R-06", name: "Cleaner Zeta", type: "cleaning", battery: 64, status: "working", location: "South-West Field", zoneId: "Z-03" },
+  { id: "D-02", name: "Inspector Y", type: "drone", battery: 100, status: "idle", location: "South-East Field", zoneId: "Z-04" },
 ];
 
 // --- FIELD MAP (Aggregates Module Faults Now) ---
@@ -298,14 +311,6 @@ export const MOCK_CAMERAS = [
   { id: "CAM-02", name: "Inverter Room A", status: "online", url: "/api/placeholder/400/300" },
   { id: "CAM-03", name: "PV Field North", status: "online", url: "/api/placeholder/400/300" },
   { id: "CAM-04", name: "Substation", status: "offline", url: "" }, 
-];
-
-export const MOCK_ROBOTS = [
-  { id: "R-01", name: "Cleaner Alpha", type: "cleaning", battery: 85, status: "working", location: "Zone A" },
-  { id: "R-02", name: "Cleaner Beta", type: "cleaning", battery: 12, status: "charging", location: "Docking Stn" },
-  { id: "R-03", name: "Cleaner Gamma", type: "cleaning", battery: 45, status: "idle", location: "Zone B" },
-  { id: "D-01", name: "Inspector X", type: "drone", battery: 92, status: "working", location: "Zone C (Air)" },
-  { id: "R-04", name: "Cleaner Delta", type: "cleaning", battery: 0, status: "error", location: "Zone D" },
 ];
 
 export const MOCK_EDGE_NODES = [

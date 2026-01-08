@@ -11,10 +11,11 @@ export default function SensorCard({ data, initialFilter }) {
 
   // --- LISTEN FOR NAVIGATION CONTEXT ---
   useEffect(() => {
-    if (initialFilter && initialFilter.level) {
+    if (initialFilter?.level && initialFilter.level !== activeLevel) {
       setActiveLevel(initialFilter.level);
     }
-  }, [initialFilter]);
+    // --- eslint-disable-next-line react-hooks/exhaustive-deps ---
+  }, [initialFilter?.level]);
 
   // --- ICON MAPPING ---
   const getIcon = (type) => {
@@ -41,21 +42,24 @@ export default function SensorCard({ data, initialFilter }) {
   const levels = ["ALL", "Environmental", "Module", "String/DC", "Inverter/AC", "Security"];
 
   const processData = useMemo(() => {
-    if (!data) return [];
+    // --- Strict check to ensure data is an Array before proceeding ---
+    if (!Array.isArray(data)) return [];
+
     let filtered = activeLevel === "ALL" ? data : data.filter(item => item.level === activeLevel);
     
     // --- Sort: Fault > Critical > Warning > Normal ---
-    return filtered.sort((a, b) => {
+    return [...filtered].sort((a, b) => {
         const score = { fault: 3, critical: 3, warning: 2, normal: 1 };
         return (score[b.status?.toLowerCase()] || 0) - (score[a.status?.toLowerCase()] || 0);
     });
   }, [data, activeLevel]);
 
+  // --- Safe check for initial render if data is missing ---
   if (!data) return null;
 
   return (
     <div className="h-full flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-       
+        
        {/* --- HEADER --- */}
        <div className="bg-slate-900 text-white p-5 relative overflow-hidden shrink-0">
           <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -94,16 +98,18 @@ export default function SensorCard({ data, initialFilter }) {
        <div className="flex-1 overflow-y-auto p-3 bg-slate-50/30 custom-scrollbar">
           <div className="flex flex-col gap-2">
             {processData.map((sensor) => {
+               const currentStatus = sensor.status?.toLowerCase() || 'normal';
+
                // --- Determine Status Styles ---
                let statusStyles = "bg-white border-slate-200";
                let iconColor = "text-slate-400";
                let valueColor = "text-slate-800";
                
-               if(sensor.status === 'warning') {
+               if(currentStatus === 'warning') {
                    statusStyles = "bg-amber-50 border-amber-200";
                    iconColor = "text-amber-600";
                    valueColor = "text-amber-700";
-               } else if(sensor.status === 'fault' || sensor.status === 'critical') {
+               } else if(currentStatus === 'fault' || currentStatus === 'critical') {
                    statusStyles = "bg-red-50 border-red-200";
                    iconColor = "text-red-600";
                    valueColor = "text-red-700";
@@ -114,16 +120,16 @@ export default function SensorCard({ data, initialFilter }) {
                   
                   {/* Left: Icon & Name */}
                   <div className="flex items-center gap-3">
-                     <div className={`p-2 rounded-lg bg-white border ${sensor.status === 'normal' ? 'border-slate-100' : 'border-transparent bg-opacity-60'} ${iconColor}`}>
-                        {getIcon(sensor.type)}
-                     </div>
-                     <div>
-                        <h4 className="text-sm font-bold text-slate-700">{sensor.name}</h4>
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 rounded">{sensor.id}</span>
-                            <span className="text-[10px] text-slate-400 capitalize">{sensor.location || "General"}</span>
-                        </div>
-                     </div>
+                      <div className={`p-2 rounded-lg bg-white border ${currentStatus === 'normal' ? 'border-slate-100' : 'border-transparent bg-opacity-60'} ${iconColor}`}>
+                         {getIcon(sensor.type)}
+                      </div>
+                      <div>
+                         <h4 className="text-sm font-bold text-slate-700">{sensor.name}</h4>
+                         <div className="flex items-center gap-1.5">
+                             <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 rounded">{sensor.id}</span>
+                             <span className="text-[10px] text-slate-400 capitalize">{sensor.location || "General"}</span>
+                         </div>
+                      </div>
                   </div>
 
                   {/* Right: Value & Status */}
@@ -133,11 +139,11 @@ export default function SensorCard({ data, initialFilter }) {
                           <span className="text-xs font-bold opacity-60">{sensor.unit}</span>
                       </div>
                       <div className="flex items-center justify-end gap-1">
-                          {sensor.status === 'normal' 
+                          {currentStatus === 'normal' 
                             ? <CheckCircle2 size={10} className="text-emerald-500" /> 
-                            : <AlertTriangle size={10} className={sensor.status === 'fault' ? "text-red-500 animate-pulse" : "text-amber-500"} />
+                            : <AlertTriangle size={10} className={currentStatus === 'fault' ? "text-red-500 animate-pulse" : "text-amber-500"} />
                           }
-                          <span className={`text-[10px] font-bold uppercase ${sensor.status === 'normal' ? 'text-emerald-600' : valueColor}`}>
+                          <span className={`text-[10px] font-bold uppercase ${currentStatus === 'normal' ? 'text-emerald-600' : valueColor}`}>
                               {sensor.status}
                           </span>
                       </div>

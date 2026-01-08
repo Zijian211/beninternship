@@ -102,17 +102,19 @@ export default function Dashboard() {
 
     // --- D. Module Matrix (String level analysis) ---
     if (activeTab === 'module' && stationData) {
-       return <ModuleMatrixView data={stationData} initialFilter={navContext} onNavigate={handleDrillDown} />;
+      return <ModuleMatrixView data={stationData} initialFilter={navContext} onNavigate={handleDrillDown} />;
     }
 
     // --- E. Sensor Diagnostics ---
     if (activeTab === 'sensors' && stationData) {
-       // 'navContext' is crucial here to switch the internal tab (e.g., directly to "Environmental")
-       return <SensorCard data={stationData} initialFilter={navContext} />;
+      return <SensorCard data={stationData} initialFilter={navContext} />;
     }
 
-    // --- F. Other Subsystems (Robots, Edge Computing, CCTV) ---
-    if (activeTab === 'robots' && stationData) return <RobotView data={stationData} />;
+    // --- F. Robots View ---
+    if (activeTab === 'robots' && stationData) 
+      return <RobotView data={stationData} initialFilter={navContext}/>;
+    
+    // --- G. Other Subsystems (Robots, Edge Computing, CCTV) ---
     if (activeTab === 'edge' && stationData) return <EdgeNodeBar data={stationData} />;
     if (activeTab === 'camera' && stationData) return <CameraGridView data={stationData} />;
 
