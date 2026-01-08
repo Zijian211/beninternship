@@ -1,64 +1,95 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState, useMemo } from "react";
 import InverterCard from "../cards/InverterCard";
-import { Filter } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 
-export default function InverterView({ data, initialFilter }) {
-  // --- Use a fallback to ensure map() crashes are avoided ---
-  const safeData = Array.isArray(data) ? data : [];
-  
-  const [filterZone, setFilterZone] = useState("ALL");
+export default function InverterView({ data, initialFilter, onNavigate }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
 
-  // --- LISTEN FOR DRILL-DOWN FILTER ---
-  useEffect(() => {
-    if (initialFilter && initialFilter.zone) {
-        setFilterZone(initialFilter.zone);
+  // --- FILTER LOGIC ---
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    
+    // --- 1. Filter by Initial Context (from Map click) ---
+    let filtered = data;
+    if (initialFilter?.zone !== "ALL") {
+      filtered = filtered.filter(item => item.zoneName === initialFilter.zone);
     }
-  }, [initialFilter]);
 
-  if (!data) return null;
+    // --- 2. Filter by Status Dropdown ---
+    if (filterStatus !== "ALL") {
+      filtered = filtered.filter(item => item.status.toLowerCase() === filterStatus.toLowerCase());
+    }
 
-  // --- Extract unique zones safely ---
-  const zones = ["ALL", ...new Set(safeData.map(item => item.zoneName).filter(Boolean))];
+    // --- 3. Filter by Search (ID) ---
+    if (searchTerm) {
+      filtered = filtered.filter(item => item.id.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
 
-  // --- Filter Logic ---
-  const filteredData = filterZone === "ALL" 
-    ? safeData 
-    : safeData.filter(item => item.zoneName === filterZone);
+    return filtered;
+  }, [data, initialFilter, filterStatus, searchTerm]);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="h-full flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Header Bar with Filter */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm gap-4">
-        <div>
-          <h3 className="font-bold text-slate-800 text-lg">Inverter Fleet Status</h3>
-          <p className="text-xs text-slate-400">Real-time conversion efficiency & health</p>
+      {/* --- CONTROLS HEADER --- */}
+      <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-3">
+            <h3 className="font-bold text-slate-700">Inverter Fleet</h3>
+            <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-1 rounded-full">
+                {filteredData.length} Units
+            </span>
         </div>
         
-        {/* The Filter Dropdown */}
-        <div className="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-          <span className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase">
-            <Filter size={14} /> Filter Zone:
-          </span>
-          <select 
-            className="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer"
-            value={filterZone}
-            onChange={(e) => setFilterZone(e.target.value)}
-          >
-            {zones.map(z => (
-              <option key={z} value={z}>{z === "ALL" ? "Show All" : z}</option>
-            ))}
-          </select>
+        <div className="flex gap-2">
+            {/* Search */}
+            <div className="relative">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input 
+                    type="text" 
+                    placeholder="Search ID..." 
+                    className="pl-9 pr-4 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+            
+            {/* Filter */}
+            <div className="relative">
+                <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <select 
+                    className="pl-9 pr-8 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white cursor-pointer"
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                >
+                    <option value="ALL">All Status</option>
+                    <option value="normal">Normal</option>
+                    <option value="warning">Warning</option>
+                    <option value="fault">Fault</option>
+                </select>
+            </div>
         </div>
       </div>
 
-      {/* Grid of Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredData.length > 0 ? (
-          filteredData.map(inv => <InverterCard key={inv.id} data={inv} />)
-        ) : (
-          <div className="col-span-full p-10 text-center text-slate-400">No Inverters Found</div>
-        )}
+      {/* --- GRID VIEW --- */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+            {filteredData.map((inverter) => (
+                <InverterCard 
+                    key={inverter.id} 
+                    data={inverter}
+                    // --- PASS NAVIGATE PROP ---
+                    onNavigate={onNavigate}
+                    // --- CLICK TO MODULE VIEW ---
+                    onClick={() => onNavigate('module', { zone: inverter.zoneName, inverter: inverter.id })}
+                />
+            ))}
+            
+            {filteredData.length === 0 && (
+                <div className="col-span-full h-64 flex items-center justify-center text-slate-400 italic">
+                    No inverters found matching your criteria.
+                </div>
+            )}
+        </div>
       </div>
     </div>
   );
