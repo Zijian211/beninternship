@@ -9,22 +9,35 @@ export default function InverterView({ data, initialFilter, onNavigate }) {
 
   // --- FILTER LOGIC ---
   const filteredData = useMemo(() => {
-    if (!data) return [];
-    
+    // --- SAFETY CHECK ---
+    // --- Ensure 'data' is actually an Array ---
+    let safeList = [];
+    if (Array.isArray(data)) {
+        safeList = data;
+    } else if (data && Array.isArray(data.data)) {
+        safeList = data.data; // Handle cases where API wraps result in { data: [...] }
+    } else if (data && Array.isArray(data.inverters)) {
+        safeList = data.inverters; // Handle cases where API wraps result in { inverters: [...] }
+    } else {
+        return []; // Fallback to empty to prevent crash
+    }
+
+    let filtered = safeList;
+
     // --- 1. Filter by Initial Context (from Map click) ---
-    let filtered = data;
+    // --- Safe check to ensure zoneName exists before comparing ---
     if (initialFilter?.zone !== "ALL") {
       filtered = filtered.filter(item => item.zoneName === initialFilter.zone);
     }
 
     // --- 2. Filter by Status Dropdown ---
     if (filterStatus !== "ALL") {
-      filtered = filtered.filter(item => item.status.toLowerCase() === filterStatus.toLowerCase());
+      filtered = filtered.filter(item => item.status?.toLowerCase() === filterStatus.toLowerCase());
     }
 
     // --- 3. Filter by Search (ID) ---
     if (searchTerm) {
-      filtered = filtered.filter(item => item.id.toLowerCase().includes(searchTerm.toLowerCase()));
+      filtered = filtered.filter(item => item.id?.toLowerCase().includes(searchTerm.toLowerCase()));
     }
 
     return filtered;
@@ -77,9 +90,7 @@ export default function InverterView({ data, initialFilter, onNavigate }) {
                 <InverterCard 
                     key={inverter.id} 
                     data={inverter}
-                    // --- PASS NAVIGATE PROP ---
                     onNavigate={onNavigate}
-                    // --- CLICK TO MODULE VIEW ---
                     onClick={() => onNavigate('module', { zone: inverter.zoneName, inverter: inverter.id })}
                 />
             ))}
