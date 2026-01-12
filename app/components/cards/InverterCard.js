@@ -76,10 +76,10 @@ export default function InverterCard({ data, onClick, onNavigate }) {
                 // --- Only navigate if efficiency is low, otherwise let it propagate ---
                 if (onNavigate && isLowEff) {
                     e.stopPropagation();
-                    onNavigate('sensors', { level: 'Inverter/AC' }); // Jump to Sensor Tab
+                    onNavigate('sensors', { level: 'Inverter/AC' }); // --- Jump to Sensor Tab ---
                 }
             }}
-            title={isLowEff ? "Click to view Sensor Diagnostics" : "Normal Efficiency"}
+            title={isLowEff ? "Click to view the Fault on Sensors' Diagnostics" : "Normal Efficiency"}
         >
             <div className="flex justify-between items-center mb-1">
                 <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">

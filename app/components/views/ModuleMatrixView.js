@@ -73,7 +73,7 @@ export default function ModuleMatrixView({ data, initialFilter, onNavigate }) {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredStrings.length > 0 ? (
           filteredStrings.map((string) => {
-            // --- UPDATED LOGIC: Only target 'fault' for the Arc Sensor jump ---
+            // --- Only target 'fault' for the Arc Sensor jump ---
             const isFault = string.status === 'fault';
             
             return (
@@ -94,7 +94,7 @@ export default function ModuleMatrixView({ data, initialFilter, onNavigate }) {
                             onNavigate('sensors', { level: 'String/DC' });
                         }
                     }}
-                    disabled={!isFault} // Warnings are now disabled
+                    disabled={!isFault}
                     className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded transition-all ${
                         string.status === 'normal' 
                         ? 'bg-green-100 text-green-700 cursor-default'
@@ -103,7 +103,7 @@ export default function ModuleMatrixView({ data, initialFilter, onNavigate }) {
                             // --- Fault remains interactive (Arc Sensor Link) ---
                             : 'bg-red-100 text-red-700 hover:bg-red-200 cursor-pointer animate-pulse'
                     }`}
-                    title={isFault ? "Click to view Arc Fault Sensor data" : ""}
+                    title={isFault ? "Click to view the Fault on Sensors' Diagnostics" : ""}
                   >
                     {string.status} {isFault && "→"}
                   </button>

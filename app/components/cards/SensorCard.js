@@ -45,7 +45,13 @@ export default function SensorCard({ data, initialFilter }) {
     // --- Strict check to ensure data is an Array before proceeding ---
     if (!Array.isArray(data)) return [];
 
-    let filtered = activeLevel === "ALL" ? data : data.filter(item => item.level === activeLevel);
+    let filtered = activeLevel === "ALL" ? data : data.filter(item => {
+        // --- Allow "Module" level items (like Diode Failures) to appear in "String/DC" view ---
+        if (activeLevel === "String/DC") {
+            return item.level === "String/DC" || item.level === "Module";
+        }
+        return item.level === activeLevel;
+    });
     
     // --- Sort: Fault > Critical > Warning > Normal ---
     return [...filtered].sort((a, b) => {
@@ -60,8 +66,8 @@ export default function SensorCard({ data, initialFilter }) {
   return (
     <div className="h-full flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
         
-       {/* --- HEADER --- */}
-       <div className="bg-slate-900 text-white p-5 relative overflow-hidden shrink-0">
+        {/* --- HEADER --- */}
+        <div className="bg-slate-900 text-white p-5 relative overflow-hidden shrink-0">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <Wifi size={100} />
           </div>
@@ -75,10 +81,10 @@ export default function SensorCard({ data, initialFilter }) {
                   ONLINE
               </div>
           </div>
-       </div>
+        </div>
 
-       {/* --- TABS --- */}
-       <div className="flex overflow-x-auto p-2 gap-1 border-b border-slate-100 bg-slate-50/50 scrollbar-hide shrink-0">
+        {/* --- TABS --- */}
+        <div className="flex overflow-x-auto p-2 gap-1 border-b border-slate-100 bg-slate-50/50 scrollbar-hide shrink-0">
         {levels.map(lvl => (
           <button
             key={lvl}
@@ -94,8 +100,8 @@ export default function SensorCard({ data, initialFilter }) {
         ))}
       </div>
 
-       {/* --- DATA LIST --- */}
-       <div className="flex-1 overflow-y-auto p-3 bg-slate-50/30 custom-scrollbar">
+        {/* --- DATA LIST --- */}
+        <div className="flex-1 overflow-y-auto p-3 bg-slate-50/30 custom-scrollbar">
           <div className="flex flex-col gap-2">
             {processData.map((sensor) => {
                const currentStatus = sensor.status?.toLowerCase() || 'normal';
@@ -121,14 +127,14 @@ export default function SensorCard({ data, initialFilter }) {
                   {/* Left: Icon & Name */}
                   <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg bg-white border ${currentStatus === 'normal' ? 'border-slate-100' : 'border-transparent bg-opacity-60'} ${iconColor}`}>
-                         {getIcon(sensor.type)}
+                          {getIcon(sensor.type)}
                       </div>
                       <div>
-                         <h4 className="text-sm font-bold text-slate-700">{sensor.name}</h4>
-                         <div className="flex items-center gap-1.5">
+                          <h4 className="text-sm font-bold text-slate-700">{sensor.name}</h4>
+                          <div className="flex items-center gap-1.5">
                              <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 rounded">{sensor.id}</span>
                              <span className="text-[10px] text-slate-400 capitalize">{sensor.location || "General"}</span>
-                         </div>
+                          </div>
                       </div>
                   </div>
 
@@ -159,7 +165,7 @@ export default function SensorCard({ data, initialFilter }) {
                 </div>
             )}
           </div>
-       </div>
+        </div>
     </div>
   );
 }
