@@ -15,9 +15,9 @@ export default function InverterView({ data, initialFilter, onNavigate }) {
     if (Array.isArray(data)) {
         safeList = data;
     } else if (data && Array.isArray(data.data)) {
-        safeList = data.data; // Handle cases where API wraps result in { data: [...] }
+        safeList = data.data; // --- Handle cases where API wraps result in { data: [...] } ---
     } else if (data && Array.isArray(data.inverters)) {
-        safeList = data.inverters; // Handle cases where API wraps result in { inverters: [...] }
+        safeList = data.inverters; // --- Handle cases where API wraps result in { inverters: [...] } ---
     } else {
         return []; // Fallback to empty to prevent crash
     }

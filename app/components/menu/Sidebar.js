@@ -18,7 +18,7 @@ const MENU_STRUCTURE = [
       { id: "station", label: "电站层", sub: "STATION LAYER", icon: LayoutDashboard },
       { id: "field", label: "场区层", sub: "FIELD VIEW", icon: Map },
       { id: "inverter", label: "逆变器层", sub: "INVERTER", icon: Zap },
-      { id: "module", label: "组件层", sub: "MODULE MATRIX", icon: Grid3x3 },
+      { id: "module", label: "组串/组件层", sub: "STRING/MODULE MATRIX", icon: Grid3x3 },
       { id: "sensors", label: "传感器", sub: "SENSORS", icon: Wind },
       { id: "robots", label: "机器人", sub: "ROBOTS", icon: Bot },
       { id: "edge", label: "边缘计算点", sub: "EDGE NODES", icon: Server },

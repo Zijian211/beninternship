@@ -9,7 +9,7 @@ export default function StationMap({ data, onNavigate }) {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold text-slate-700 flex items-center gap-2">
            <Grid3X3 size={18} className="text-slate-400" />
-           Station Topology (Click a Zone or Panel to jump to Module View)
+           Station Topology (Click a Zone or Panel to jump to String/Module View)
         </h3>
         
         {/* Legend */}

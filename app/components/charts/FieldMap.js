@@ -69,7 +69,7 @@ export default function FieldMap({ data, onNavigate }) {
         <div>
           <h3 className="text-lg font-bold text-slate-800">Station Spatial View</h3>
           <p className="text-sm text-slate-400">Real-time Zone Topology & Navigation</p>
-          <p className="text-xs text-slate-400 mt-1">-- Click a Zone to Navigate Inverter, Module, or Robots --</p>
+          <p className="text-xs text-slate-400 mt-1">-- Click a Zone to Navigate Inverter, String/Module, or Robots --</p>
         </div>
         {/* Status Legend */}
         <div className="flex gap-4 text-xs font-medium">
@@ -149,7 +149,7 @@ export default function FieldMap({ data, onNavigate }) {
               
               {/* Module Button: Standard Navigation (Name-based) */}
               <button onClick={() => handleMenuNavigate('module')} className="flex items-center justify-between w-full px-3 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors text-left">
-                <span className="flex items-center gap-2"><Layers size={16} /> Modules</span>
+                <span className="flex items-center gap-2"><Layers size={16} /> Strings/Modules</span>
                 <ArrowRight size={14} className="text-slate-400" />
               </button>
 

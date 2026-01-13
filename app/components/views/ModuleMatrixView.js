@@ -41,9 +41,9 @@ export default function ModuleMatrixView({ data, initialFilter, onNavigate }) {
       <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm gap-4">
         <div>
           <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-            <Layers size={20} className="text-blue-600"/> PV String Matrix
+            <Layers size={20} className="text-blue-600"/> PV String/Module Matrix
           </h3>
-          <p className="text-xs text-slate-400">Detailed String Monitoring</p>
+          <p className="text-xs text-slate-400">Detailed Strings and Their Modules Monitoring</p>
         </div>
         <div className="flex gap-3">
           <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
