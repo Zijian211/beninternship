@@ -40,11 +40,15 @@ export default function CameraGridView({ data }) {
             <div className="aspect-video bg-slate-900 relative flex items-center justify-center">
               {cam.status === 'online' ? (
                 <>
-                  <img 
+                  <video 
                     src={cam.url} 
-                    alt={cam.name} 
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                   />
+                  
                   {/* Blinking REC dot */}
                   <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 px-2 py-1 rounded backdrop-blur-sm">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>

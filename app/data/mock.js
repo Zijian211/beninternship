@@ -371,10 +371,10 @@ export const MOCK_ANALYSIS_DATA = [
 ];
 
 export const MOCK_CAMERAS = [
-  { id: "CAM-01", name: "Main Gate", status: "online", url: "/api/placeholder/400/300" },
-  { id: "CAM-02", name: "Inverter Room A", status: "online", url: "/api/placeholder/400/300" },
-  { id: "CAM-03", name: "PV Field North", status: "online", url: "/api/placeholder/400/300" },
-  { id: "CAM-04", name: "Substation", status: "offline", url: "" }, 
+  { id: "CAM-01", name: "PV Field North West -- Z-01", status: "online", url: "/videos/2887461-hd_1920_1080_25fps.mp4" },
+  { id: "CAM-02", name: "PV Field North East -- Z-02", status: "online", url: "/videos/13492018_1920_1080_60fps.mp4" },
+  { id: "CAM-03", name: "PV Field South West -- Z-03", status: "online", url: "/videos/2249554-uhd_3840_2160_24fps.mp4" },
+  { id: "CAM-04", name: "PV Field South East -- Z-04", status: "offline", url: "" }, 
 ];
 
 export const MOCK_EDGE_NODES = [
