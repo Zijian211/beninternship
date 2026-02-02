@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { MOCK_STATION_STATUS, MOCK_ANALYSIS_DATA, MOCK_STATION_MAP } from '@/app/data/mock'; 
 
 export async function GET() {
-  await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   return NextResponse.json({
     success: true,

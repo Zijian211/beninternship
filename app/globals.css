@@ -15,18 +15,38 @@ body {
 
 @layer components {
   /* --- MAIN MENU STYLE (GREY) --- */
+  /* Default State (Inactive) */
   .btn-main {
     @apply flex items-center justify-between w-full px-4 py-3 mb-2 rounded-xl transition-all duration-300 font-bold text-slate-600 bg-gray-50 border border-transparent hover:bg-gray-200 hover:scale-[1.02];
   }
+  /* Active State (Clicked) */
   .btn-main-active {
     @apply bg-slate-700 text-white shadow-lg border-slate-600;
   }
 
-  /* --- SUB MENU STYLE (BLUE) --- */
-  .btn-sub {
-    @apply flex items-center w-[90%] ml-auto px-4 py-2 mb-1 rounded-lg transition-all duration-200 text-sm font-medium text-slate-500 bg-blue-50/50 border border-transparent hover:bg-blue-100 hover:text-blue-700;
+  /* --- SUB MENU JOINT STYLES --- */
+  /* This handles the layout/shape for ALL sub-menu items */
+  .btn-sub-base {
+    @apply flex items-center w-[90%] ml-auto px-4 py-2 mb-1 rounded-lg transition-all duration-200 text-sm font-medium border border-transparent hover:scale-[1.02];
   }
-  .btn-sub-active {
-    @apply bg-blue-600 text-white shadow-md font-bold;
+
+  /* --- THEME 1: INTERNAL MODULES (BLUE) --- */
+  /* Default State (Inactive) */
+  .btn-sub-blue {
+    @apply text-slate-500 bg-blue-50/50 hover:bg-blue-100 hover:text-blue-600;
+  }
+  /* Active State (Clicked) */
+  .btn-sub-blue-active {
+    @apply bg-blue-600 text-white shadow-md border-blue-500 hover:bg-blue-700;
+  }
+
+  /* --- THEME 2: EXTERNAL MODULES (GREEN) --- */
+  /* Default State (Inactive) */
+  .btn-sub-green {
+    @apply text-slate-500 bg-emerald-50/50 hover:bg-emerald-100 hover:text-emerald-600;
+  }
+  /* Active State (Clicked) */
+  .btn-sub-green-active {
+    @apply bg-emerald-600 text-white shadow-md border-emerald-500 hover:bg-emerald-700;
   }
 }
