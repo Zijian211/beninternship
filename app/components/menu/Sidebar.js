@@ -28,30 +28,30 @@ const MENU_STRUCTURE = [
     ]
   },
   {
-    id: "diagnosis",
-    label: "智能诊断",
-    subLabel: "AI DIAGNOSIS",
+    id: "inspection",
+    label: "巡检作业",
+    subLabel: "INSPECTION",
     icon: ClipboardCheck,
     type: "link"
   },
   {
     id: "analysis",
-    label: "统计分析",
-    subLabel: "STATISTICS",
+    label: "数据统计",
+    subLabel: "DATA ANALYTICS",
     icon: BarChart3,
     type: "link"
   },
   {
-    id: "health",
-    label: "健康管理",
-    subLabel: "HEALTH MGMT",
+    id: "smart_om",
+    label: "智能运维",
+    subLabel: "SMART O&M",
     icon: Stethoscope,
     type: "link"
   },
   {
-    id: "report",
-    label: "报表生成",
-    subLabel: "REPORTS",
+    id: "marketing",
+    label: "市场分析",
+    subLabel: "MARKET MONITORING",
     icon: TrendingUp,
     type: "link"
   }

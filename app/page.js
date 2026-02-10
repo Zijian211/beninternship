@@ -118,7 +118,7 @@ export default function Dashboard() {
     if (activeTab === 'edge' && stationData) return <EdgeNodeBar data={stationData} />;
     if (activeTab === 'camera' && stationData) return <CameraGridView data={stationData} />;
 
-    return <div className="flex items-center justify-center h-full text-gray-300">Select a module</div>;
+    return <div className="flex items-center justify-center h-full text-gray-300"> <currentItem.icon size={24} /> {currentItem.cn} {currentItem.en} is Constructing...</div>;
   };
 
   // --- 5. MAIN LAYOUT ---
